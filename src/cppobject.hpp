@@ -3,6 +3,10 @@
 #ifndef _CPPOBJECTOBJECT_HPP_
 #define _CPPOBJECTOBJECT_HPP_
 
+#include <cstddef>
+#include <unordered_set>
+#include <unordered_map>
+
 
 
 #define REF(obj) ((typeof(obj)) (obj)->ref())
@@ -25,14 +29,52 @@
 //
 namespace cppobject
 {
+  class Object;
+  class weakref_base;
+  
+  typedef std::unordered_set<weakref_base *> weakref_set;
+  typedef std::unordered_map<Object *, weakref_set *> weakref_map;
+  
+  class weakref_base
+  {
+    friend Object;
+    
+  private:
+    static weakref_map weakrefs;
+
+    static void do_notify ( Object *ref );
+    
+  protected:
+    Object *ref;
+
+    weakref_base();
+    weakref_base ( Object *ref );
+    ~weakref_base ();
+    virtual void set ( Object *ref );
+    virtual void notify () {}
+  };
+
+  template < class T > class weakref : public weakref_base
+  {
+  public:
+    weakref () {}
+    weakref ( T *ref ) : weakref_base((Object *) ref) {}
+    void set ( T *ref ) { this->weakref_base::set((Object *) ref); }
+    T *get () { return (T *) ref; }
+  };
+    
   class Object
   {
+    friend weakref_base;
+    
   private:
-    unsigned int ref_count;
+    unsigned int ref_count : (sizeof(int) - 1);
+    unsigned int has_weakref : 1;
     
   public:
     Object ();
     virtual ~Object ();
+    unsigned int get_ref_count () { return ref_count; }
     Object *ref ();
     void unref ();
   };

@@ -1,6 +1,6 @@
 #
 
-SUBDIRS = src
+SUBDIRS = src test
 
 pkgconfig_DATA = cppobject.pc
 
