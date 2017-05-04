@@ -1,0 +1,13 @@
+PACKAGE=@PACKAGE@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+includedir=@includedir@
+libdir=@libdir@
+pkglibdir=@pkglibdir@
+
+Name: cppobject
+Description: A simple C++ reference counting system
+Version: 0.0.0
+Requires:
+Cflags: -I${includedir}
+Libs: -L${libdir} -lcppobject
