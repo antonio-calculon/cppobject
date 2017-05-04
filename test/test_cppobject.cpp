@@ -70,6 +70,13 @@ public:
 };
 
 
+void foo ( A *a )
+{
+  DEBUG("foo!");
+  AUTOREF(a);
+}
+
+
 int main ()
 {
   A *a1 = new A((const char *) "A1");
@@ -79,6 +86,7 @@ int main ()
   weak_a wa3(a1);
   DEBUG("wa1: %p", wa1.get());
   DEBUG("wa2: %p", wa2.get());
+  foo(a1);
   a1->ref();
   DEBUG("wa1: %p", wa1.get());
   DEBUG("wa2: %p", wa2.get());

@@ -20,6 +20,7 @@ weakref_base::weakref_base()
 
 weakref_base::weakref_base ( Object *ref )
 {
+  this->ref = NULL;
   set(ref);
 }
 
@@ -62,7 +63,7 @@ void weakref_base::set ( Object *ref )
       weakrefs[ref] = list;
     }
   list->insert(this);
-  ref->has_weakref = true;  
+  ref->has_weakref = 1;
 }
 
 
@@ -105,14 +106,14 @@ Object::~Object ()
 
 Object *Object::ref ()
 {
-ref_count++;
-return this;
+  ref_count++;
+  return this;
 }
 
 
 
 void Object::unref ()
 {
-if (!(--ref_count))
-  delete this;
+  if (!(--ref_count))
+    delete this;
 }

@@ -23,6 +23,8 @@
       CLEAR(obj);                               \
   } while (0)
 
+#define AUTOREF(var) autoref __autoref_##var(var)
+
 
 
 // cppobject::Object
@@ -68,7 +70,7 @@ namespace cppobject
     friend weakref_base;
     
   private:
-    unsigned int ref_count : (sizeof(int) - 1);
+    unsigned int ref_count : (sizeof(unsigned int) - 1);
     unsigned int has_weakref : 1;
     
   public:
@@ -77,6 +79,22 @@ namespace cppobject
     unsigned int get_ref_count () { return ref_count; }
     Object *ref ();
     void unref ();
+  };
+
+  class autoref
+  {
+  private:
+    Object *ref;
+    
+  public:
+    autoref ( Object *ref )
+    {
+      this->ref = (Object *) ref->ref();
+    }
+    ~autoref ()
+    {
+      this->ref->unref();
+    }
   };
 }
 
